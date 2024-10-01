@@ -1,0 +1,34 @@
+/* styles.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  nz-header {
+    background-color: #1890ff; /* Màu sắc của header */
+    color: white; /* Màu chữ */
+  }
+  
+  nz-sider {
+    background-color: #001529; /* Màu nền của sidebar */
+  }
+  
+  nz-sider ul {
+    padding: 0;
+    list-style: none; /* Xóa kiểu danh sách */
+  }
+  
+  nz-sider li {
+    margin: 0;
+  }
+  
+  nz-sider button {
+    width: 100%; /* Đảm bảo button chiếm toàn bộ chiều rộng */
+    text-align: left; /* Căn trái văn bản */
+  }
+  
+  .nz-footer {
+    background-color: #001529; /* Màu nền footer */
+    color: white; /* Màu chữ */
+  }
+  

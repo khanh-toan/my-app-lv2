@@ -1,0 +1,19 @@
+<nz-layout>
+  <nz-header>
+    <app-app-header></app-app-header>
+  </nz-header>
+  <nz-layout>
+    <app-app-menu></app-app-menu>
+    <nz-layout>
+      <nz-content>
+        <div style="padding: 24px; background-color: #f0f2f5; min-height: calc(100vh - 64px);">
+          <!-- Nội dung chính sẽ được thêm vào đây -->
+          <router-outlet></router-outlet>
+        </div>
+      </nz-content>
+      <nz-footer style="text-align: center;">
+        <app-app-footer></app-app-footer>
+      </nz-footer>
+    </nz-layout>
+  </nz-layout>
+</nz-layout>

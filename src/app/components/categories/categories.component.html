@@ -1,0 +1,40 @@
+<div class="categories-container">
+  <h2>Danh sách Categories</h2>
+
+  <div class="add-category">
+    <input [(ngModel)]="newCategoryName" placeholder="Thêm danh mục mới" />
+    <button nz-button nzType="primary" (click)="addCategory()">Thêm</button>
+  </div>
+
+  <!-- Ô tìm kiếm -->
+  <div class="search-category">
+    <input [(ngModel)]="searchTerm" placeholder="Tìm kiếm danh mục" />
+  </div>
+
+  <nz-table #basicTable [nzData]="searchCategories()" [nzBordered]="true">
+    <thead>
+      <tr>
+        <th nzWidth="25%">Tên Danh Mục</th>
+        <th nzWidth="25%">Hành Động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let category of searchCategories(); let i = index">
+        <td>
+          <ng-container *ngIf="editMode && editingCategoryId === category.id; else displayMode">
+            <input [(ngModel)]="category.name" placeholder="Sửa tên danh mục" />
+          </ng-container>
+          <ng-template #displayMode>
+            {{ category.name }}
+          </ng-template>
+        </td>
+        <td>
+          <button nz-button nzType="default" (click)="toggleEditMode(category.id)">Sửa</button>
+          <button *ngIf="editMode && editingCategoryId === category.id" nz-button nzType="primary"
+            (click)="updateCategory(category)">Lưu</button>
+          <button nz-button nzType="default" (click)="deleteCategory(category.id)">Xóa</button>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

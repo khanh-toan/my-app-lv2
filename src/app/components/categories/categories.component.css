@@ -1,0 +1,11 @@
+.search-category {
+    margin: 20px 0;
+  }
+  
+  .search-category input {
+    padding: 10px;
+    width: 300px; /* Chiều rộng của ô tìm kiếm */
+    border: 1px solid #d9d9d9; /* Đường viền */
+    border-radius: 4px; /* Bo tròn góc */
+  }
+  

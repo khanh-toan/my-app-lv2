@@ -1,0 +1,75 @@
+<div class="blogs-container">
+    <h2>Danh sách Blogs</h2>
+    <button nz-button nzType="primary" (click)="openAddModal()" style="margin-top: 20px;">Thêm Blog</button>
+    <!-- Danh sách Blogs -->
+    <nz-table #basicTable [nzData]="blogList" [nzBordered]="true">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Tiêu Đề</th>
+                <th>Trạng Thái</th>
+                <th>Danh Mục</th>
+                <th>Ngày</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let blog of blogList">
+                <td>{{ blog.id }}</td>
+                <td>{{ blog.title }}</td>
+                <td>{{ blog.public ? 'Công Khai' : 'Riêng Tư' }}</td>
+                <td>{{ blog.category }}</td>
+                <td>{{ blog.data_pubblic }}</td>
+                <td style="text-align: center;">
+                    <span nz-icon nzType="edit" (click)="openEditModal(blog)" nzTheme="outline" style="cursor:pointer; margin-right: 10px; color: #1714db;"></span>
+                    <span nz-icon nzType="delete" (click)="deleteBlog(blog.id)" nzTheme="outline" style="cursor:pointer; color: #d41212;" ></span>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+
+    <!-- Modal Thêm/Sửa Blog -->
+    <nz-modal nzOkText="Ok" [(nzVisible)]="isModalVisible" [nzTitle]="editMode ? 'Cập Nhật Blog' : 'Thêm Blog'"
+        (nzOnCancel)="handleCancel()" (nzOnOk)="editMode ? updateBlog() : addBlog()">
+        <ng-container *nzModalContent>
+            <form nz-form [formGroup]="blogForm" (ngSubmit)="editMode ? updateBlog() : addBlog()">
+                <div nz-row [nzGutter]="16">
+                    <nz-form-item nz-col [nzSpan]="24">
+                        <nz-form-label [nzSpan]="6" nzRequired>Tiêu Đề</nz-form-label>
+                        <nz-form-control [nzSpan]="24" [nzErrorTip]="titleError">
+                            <input formControlName="title" nz-input style="width: 100%;" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item nz-col [nzSpan]="24">
+                        <nz-form-label [nzSpan]="6" nzRequired>Mô Tả</nz-form-label>
+                        <nz-form-control [nzSpan]="24" [nzErrorTip]="desError">
+                            <input formControlName="des" nz-input style="width: 100%;" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item nz-col [nzSpan]="24">
+                        <nz-form-label [nzSpan]="6" nzRequired>Chi Tiết</nz-form-label>
+                        <nz-form-control [nzSpan]="24" [nzErrorTip]="detailError">
+                            <textarea formControlName="detail" nz-input rows="4" style="width: 100%;"></textarea>
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item nz-col [nzSpan]="24">
+                        <nz-form-label [nzSpan]="6" nzRequired>Danh Mục</nz-form-label>
+                        <nz-form-control [nzSpan]="24" [nzErrorTip]="categoryError">
+                            <input type="number" formControlName="category" nz-input style="width: 100%;" />
+                        </nz-form-control>
+                    </nz-form-item>
+
+                    <nz-form-item nz-col [nzSpan]="24">
+                        <nz-form-label [nzSpan]="6" nzRequired>Ngày</nz-form-label>
+                        <nz-form-control [nzSpan]="24" [nzErrorTip]="dateError">
+                            <input type="date" formControlName="date" nz-input style="width: 100%;" />
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+            </form>
+        </ng-container>
+    </nz-modal>
+</div>
