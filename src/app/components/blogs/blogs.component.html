@@ -10,6 +10,7 @@
                 <th>Trạng Thái</th>
                 <th>Danh Mục</th>
                 <th>Ngày</th>
+                <th>Tọa Độ</th>
                 <th>Hình Ảnh</th>
                 <th>Hành Động</th>
             </tr>
@@ -23,9 +24,16 @@
                 <td *ngIf="categories.length > 0">{{ getCategoryName(blog.category) }}</td>
                 <td *ngIf="categories.length === 0">Loading...</td>
                 <td>{{ blog.data_pubblic }}</td>
+                <!-- Hiển thị danh sách vị trí -->
                 <td>
-                    <img *ngIf="blog.thumbs" [src]="blog.thumbs" alt="Blog Thumbnail" style="max-width: 100%; height: auto;" />
-                </td>                
+                    <ng-container *ngFor="let posId of blog.position">
+                        {{ getPositionName(posId) }}<span *ngIf="!isLastPosition(blog.position, posId)">, </span>
+                    </ng-container>
+                </td>
+                <td>
+                    <img *ngIf="blog.thumbs" [src]="blog.thumbs" alt="Blog Thumbnail"
+                        style="max-width: 200px; height: 180px;" />
+                </td>
                 <td style="text-align: center;">
                     <span nz-icon nzType="edit" (click)="openEditModal(blog)" nzTheme="outline"
                         style="cursor:pointer; margin-right: 10px; color: #1714db;"></span>
@@ -67,11 +75,13 @@
                     <nz-form-item nz-col [nzSpan]="24">
                         <nz-form-label [nzSpan]="6" nzRequired>Danh Mục</nz-form-label>
                         <nz-form-control [nzSpan]="24" [nzErrorTip]="categoryError">
-                          <nz-select formControlName="category" nzShowSearch nzPlaceHolder="Chọn danh mục" style="width: 100%;">
-                            <nz-option *ngFor="let category of categories" [nzLabel]="category.name" [nzValue]="category.id"></nz-option>
-                          </nz-select>
+                            <nz-select formControlName="category" nzShowSearch nzPlaceHolder="Chọn danh mục"
+                                style="width: 100%;">
+                                <nz-option *ngFor="let category of categories" [nzLabel]="category.name"
+                                    [nzValue]="category.id"></nz-option>
+                            </nz-select>
                         </nz-form-control>
-                      </nz-form-item>                      
+                    </nz-form-item>
 
                     <nz-form-item nz-col [nzSpan]="24">
                         <nz-form-label [nzSpan]="6" nzRequired>Ngày</nz-form-label>
@@ -80,24 +90,36 @@
                         </nz-form-control>
                     </nz-form-item>
 
+                    <!-- Thêm phần chọn vị trí -->
+                    <nz-form-item nz-col [nzSpan]="24">
+                        <nz-form-label [nzSpan]="6" nzRequired>Vị Trí</nz-form-label>
+                        <nz-form-control [nzSpan]="24" [nzErrorTip]="positionError">
+                            <nz-select formControlName="position" nzMode="multiple" nzPlaceHolder="Chọn vị trí"
+                                style="width: 100%;">
+                                <nz-option *ngFor="let pos of positions" [nzLabel]="pos.name"
+                                    [nzValue]="pos.id"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+
                     <nz-form-item nz-col [nzSpan]="24">
                         <nz-form-label [nzSpan]="6">Trạng Thái</nz-form-label>
                         <nz-form-control [nzSpan]="24">
-                          <label>
-                            <input type="radio" formControlName="public" [value]="true"/>True
-                          </label>
-                          <label>
-                            <input type="radio" formControlName="public" [value]="false"/> False
-                          </label>
+                            <label>
+                                <input type="radio" formControlName="public" [value]="true" />True
+                            </label>
+                            <label>
+                                <input type="radio" formControlName="public" [value]="false" /> False
+                            </label>
                         </nz-form-control>
-                      </nz-form-item>
-                      
-                      <nz-form-item nz-col [nzSpan]="24">
+                    </nz-form-item>
+
+                    <nz-form-item nz-col [nzSpan]="24">
                         <nz-form-label [nzSpan]="6">Ảnh</nz-form-label>
                         <nz-form-control [nzSpan]="24">
-                          <input type="file" (change)="onFileSelected($event)" />
+                            <input type="file" (change)="onFileSelected($event)" />
                         </nz-form-control>
-                      </nz-form-item>
+                    </nz-form-item>
                 </div>
             </form>
         </ng-container>

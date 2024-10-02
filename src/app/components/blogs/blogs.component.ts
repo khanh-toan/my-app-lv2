@@ -3,6 +3,8 @@ import { Blog } from '../../models/blog';
 import { BlogService } from '../../services/blog.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CategoryService } from '../../services/category.service';
+import { PositionService } from '../../services/position.service';
+import { Position } from '../../models/position';
 
 @Component({
   selector: 'app-blogs',
@@ -10,28 +12,20 @@ import { CategoryService } from '../../services/category.service';
   styleUrl: './blogs.component.css'
 })
 export class BlogsComponent implements OnInit {
-
   blogForm: FormGroup;
   blogList: Blog[] = []; // Danh sách blog
   categories: { id: number; name: string }[] = [];
+  positions: Position[] = [];
   editMode: boolean = false;
   editingBlogId: number | null = null;
   // Modal
   isModalVisible = false;
-currentBlog: any;
 
   openAddModal(): void {
     this.isModalVisible = true;
     this.editMode = false; // Thiết lập chế độ thêm
     this.blogForm.reset(); // Reset form
   }
-
-  // openEditModal(blog: Blog): void {
-  //   this.isModalVisible = true;
-  //   this.editMode = true; 
-  //   this.editingBlogId = blog.id; // Lưu ID blog đang chỉnh sửa
-  //   this.blogForm.patchValue(blog); // Cập nhật form với thông tin blog cần sửa
-  // }
 
   openEditModal(blog: Blog): void {
     this.editMode = true; // Thiết lập chế độ sửa
@@ -45,10 +39,10 @@ currentBlog: any;
       data_pubblic: blog.data_pubblic ? new Date(blog.data_pubblic).toISOString().substring(0, 10) : null,
       public: blog.public,
       thumbs: blog.thumbs == null ? "" : blog.thumbs.toString(),
+      position: blog.position.map(pos => pos.toString())
     });
     this.isModalVisible = true;
   }
-
 
   handleCancel(): void {
     this.isModalVisible = false; // Đóng modal
@@ -60,8 +54,9 @@ currentBlog: any;
   detailError: string = "";
   categoryError: string = "";
   dateError: string = "";
+  positionError: string = "";
 
-  constructor(private fb: FormBuilder, private blogService: BlogService, private categoryService: CategoryService) {
+  constructor(private fb: FormBuilder, private blogService: BlogService, private categoryService: CategoryService, private positionService: PositionService) {
     this.blogForm = this.fb.group({
       id: [],
       title: ['', Validators.required],
@@ -70,7 +65,8 @@ currentBlog: any;
       category: [null, [Validators.required, Validators.min(1)]],
       data_pubblic: ['', Validators.required],
       public: [true], // Trường radio, mặc định là công khai
-      thumbs: [null] // Trường upload ảnh
+      thumbs: [null], // Trường upload ảnh
+      position: [[], Validators.required]
     });
     this.updateErrorMessages(); // Khởi tạo các biến lưu thông báo l��i
   }
@@ -78,6 +74,7 @@ currentBlog: any;
   ngOnInit(): void {
     this.fetchCategories(); // Lấy danh sách danh mục khi khởi đ��ng
     this.fetchBlogs(); // Lấy danh sách blog khi khởi động
+    this.fetchPositions();
   }
 
   fetchBlogs(): void {
@@ -92,10 +89,25 @@ currentBlog: any;
     });
   }
 
+  fetchPositions(): void {
+    this.positionService.getPositions().subscribe(positions => {
+      this.positions = positions;
+    });
+  }
+
   getCategoryName(categoryId: number): string {
     const category = this.categories.find(cat => +cat.id === categoryId);
     // console.log(category);
     return category ? category.name : 'Unknown'; // Trả về 'Unknown' nếu không tìm thấy
+  }
+
+  getPositionName(posId: number): string {
+    const position = this.positions.find(pos => +pos.id === posId);
+    return position ? position.name : 'Unknown';
+  }
+
+  isLastPosition(positionArray: number[], posId: number): boolean {
+    return positionArray.indexOf(posId) === positionArray.length - 1;
   }
 
   resetErrorMessages(): void {
@@ -119,20 +131,20 @@ currentBlog: any;
     if (fileInput.files && fileInput.files.length > 0) {
       const file = fileInput.files[0];
       const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            const thumbs = reader.result as string; // Cập nhật trường thumbs bằng base64
-            this.blogForm.patchValue({ thumbs: thumbs }); // Cập nhật trường thumbs trong form
-          };
-          reader.onerror = (error) => {
-            console.error('Error converting image to Base64', error);
-          };
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const thumbs = reader.result as string; // Cập nhật trường thumbs bằng base64
+        this.blogForm.patchValue({ thumbs: thumbs }); // Cập nhật trường thumbs trong form
+      };
+      reader.onerror = (error) => {
+        console.error('Error converting image to Base64', error);
+      };
     }
   }
 
 
   addBlog(): void {
-    if(!this.blogForm.valid) {
+    if (!this.blogForm.valid) {
       Object.values(this.blogForm.controls).forEach(control => {
         if (control.invalid) {
           control.markAsDirty();
@@ -141,14 +153,23 @@ currentBlog: any;
       });
     }
     if (this.blogForm.valid) {
+      const maxId = this.blogList.length > 0 ? Math.max(...this.blogList.map(blog => typeof blog.id === 'number' ? blog.id : parseInt(blog.id, 10))) : 0;
       // Xử lý thêm blog
-      const newBlog: Blog = this.blogForm.value;
+      // Lấy giá trị từ form và chuyển đổi mảng position từ string[] sang number[]
+      const newBlog: Blog = {
+        ...this.blogForm.value,
+        id: maxId + 1, // Tăng id lên 1
+        category: Number(this.blogForm.value.category), // Convert từ string sang number
+        position: this.blogForm.value.position.map((posId: string) => Number(posId)) // Convert từ string sang number
+      };
+
       this.blogService.addBlog(newBlog).subscribe(
         () => {
           // Reset form và xử lý thành công
           this.blogForm.reset();
           this.handleCancel();
           this.resetErrorMessages();
+          this.fetchBlogs();
         },
         error => console.error('Error adding blog', error)
       );
@@ -156,8 +177,9 @@ currentBlog: any;
       this.updateErrorMessages();
     }
   }
+
   updateBlog(): void {
-    if(!this.blogForm.valid) {
+    if (!this.blogForm.valid) {
       Object.values(this.blogForm.controls).forEach(control => {
         if (control.invalid) {
           control.markAsDirty();
@@ -167,9 +189,13 @@ currentBlog: any;
     }
     if (this.blogForm.valid && this.editingBlogId !== null) {
       const data = this.blogForm.value;
-      this.sendUpdateRequest(data);
-    } else {
-      // this.updateErrorMessages();
+      // Chuyển đổi mảng position từ string[] sang number[]
+      const updatedBlog: Blog = {
+        ...data,
+        category: Number(data.category), // Convert từ string sang number
+        position: data.position.map((posId: string) => Number(posId)) // Convert từ string sang number
+      };
+      this.sendUpdateRequest(updatedBlog);
     }
   }
 
@@ -185,14 +211,18 @@ currentBlog: any;
     });
   }
 
-
-
-
   deleteBlog(blogId: number): void {
-    this.blogService.deleteBlog(blogId).subscribe(() => {
-      this.fetchBlogs(); // Lấy lại danh sách blog sau khi xóa
-    });
-  }
+    console.log(blogId);
+    this.blogService.deleteBlog(blogId).subscribe(
+      () => {
+        // Sau khi xoá thành công, tự động tải lại danh sách blog
+        this.fetchBlogs();
+      },
+      error => {
+        console.error('Error deleting blog', error);
+      }
+    );
+  }  
 
   updateErrorMessages(): void {
     this.titleError = this.blogForm.get('title')?.hasError('required') ? 'Tiêu đề là bắt buộc.' : '';
