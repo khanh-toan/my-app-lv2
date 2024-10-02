@@ -10,6 +10,7 @@
                 <th>Trạng Thái</th>
                 <th>Danh Mục</th>
                 <th>Ngày</th>
+                <th>Hình Ảnh</th>
                 <th>Hành Động</th>
             </tr>
         </thead>
@@ -22,6 +23,9 @@
                 <td *ngIf="categories.length > 0">{{ getCategoryName(blog.category) }}</td>
                 <td *ngIf="categories.length === 0">Loading...</td>
                 <td>{{ blog.data_pubblic }}</td>
+                <td>
+                    <img *ngIf="blog.thumbs" [src]="blog.thumbs" alt="Blog Thumbnail" style="max-width: 100%; height: auto;" />
+                </td>                
                 <td style="text-align: center;">
                     <span nz-icon nzType="edit" (click)="openEditModal(blog)" nzTheme="outline"
                         style="cursor:pointer; margin-right: 10px; color: #1714db;"></span>
@@ -91,7 +95,7 @@
                       <nz-form-item nz-col [nzSpan]="24">
                         <nz-form-label [nzSpan]="6">Ảnh</nz-form-label>
                         <nz-form-control [nzSpan]="24">
-                          <input type="file" (change)="onFileChange($event)" />
+                          <input type="file" (change)="onFileSelected($event)" />
                         </nz-form-control>
                       </nz-form-item>
                 </div>

@@ -24,6 +24,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CommonModule } from '@angular/common';
+import { DemoNgZorroAntdModule } from './DemoNgZorroAntdModule.module';
 
 @NgModule({
   declarations: [
@@ -38,22 +40,14 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
   ],
   imports: [
     BrowserModule,
-    NzNoAnimationModule,
-    BrowserAnimationsModule,
     AppRoutingModule,
-    HttpClientModule,
     FormsModule,
-    NzLayoutModule,
-    NzMenuModule,
-    NzButtonModule,
-    NzModalModule,
     ReactiveFormsModule,
-    NzGridModule,
-    NzIconModule ,
-    NzTableModule,
-    NzToolTipModule,
-    NzSelectModule,
-    DragDropModule
+    DemoNgZorroAntdModule,
+    BrowserAnimationsModule,
+    DragDropModule,
+    HttpClientModule,
+    DemoNgZorroAntdModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],

@@ -18,6 +18,7 @@ export class BlogsComponent implements OnInit {
   editingBlogId: number | null = null;
   // Modal
   isModalVisible = false;
+currentBlog: any;
 
   openAddModal(): void {
     this.isModalVisible = true;
@@ -36,6 +37,7 @@ export class BlogsComponent implements OnInit {
     this.editMode = true; // Thiết lập chế độ sửa
     this.editingBlogId = blog.id; // Gán ID blog cần sửa
     this.blogForm.patchValue({
+      id: blog.id,
       title: blog.title,
       des: blog.des,
       detail: blog.detail,
@@ -53,14 +55,15 @@ export class BlogsComponent implements OnInit {
   }
 
   // Các biến để lưu thông báo lỗi
-  titleError: string | null = null;
-  desError: string | null = null;
-  detailError: string | null = null;
-  categoryError: string | null = null;
-  dateError: Date | null = null;
+  titleError: string = '';
+  desError: string = "";
+  detailError: string = "";
+  categoryError: string = "";
+  dateError: string = "";
 
   constructor(private fb: FormBuilder, private blogService: BlogService, private categoryService: CategoryService) {
     this.blogForm = this.fb.group({
+      id: [],
       title: ['', Validators.required],
       des: ['', Validators.required],
       detail: ['', Validators.required],
@@ -69,6 +72,7 @@ export class BlogsComponent implements OnInit {
       public: [true], // Trường radio, mặc định là công khai
       thumbs: [null] // Trường upload ảnh
     });
+    this.updateErrorMessages(); // Khởi tạo các biến lưu thông báo l��i
   }
 
   ngOnInit(): void {
@@ -95,10 +99,10 @@ export class BlogsComponent implements OnInit {
   }
 
   resetErrorMessages(): void {
-    this.titleError = null;
-    this.desError = null;
-    this.detailError = null;
-    this.categoryError = null;
+    this.titleError = '';
+    this.desError = "";
+    this.detailError = "";
+    this.categoryError = "";
   }
 
   toggleEditMode(blogId: number): void {
@@ -110,16 +114,32 @@ export class BlogsComponent implements OnInit {
     }
   }
 
-  onFileChange(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.blogForm.patchValue({
-        thumbs: file // Lưu file vào FormGroup
-      });
+  onFileSelected(event: Event): void {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            const thumbs = reader.result as string; // Cập nhật trường thumbs bằng base64
+            this.blogForm.patchValue({ thumbs: thumbs }); // Cập nhật trường thumbs trong form
+          };
+          reader.onerror = (error) => {
+            console.error('Error converting image to Base64', error);
+          };
     }
   }
 
+
   addBlog(): void {
+    if(!this.blogForm.valid) {
+      Object.values(this.blogForm.controls).forEach(control => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
+        }
+      });
+    }
     if (this.blogForm.valid) {
       // Xử lý thêm blog
       const newBlog: Blog = this.blogForm.value;
@@ -127,6 +147,7 @@ export class BlogsComponent implements OnInit {
         () => {
           // Reset form và xử lý thành công
           this.blogForm.reset();
+          this.handleCancel();
           this.resetErrorMessages();
         },
         error => console.error('Error adding blog', error)
@@ -135,58 +156,36 @@ export class BlogsComponent implements OnInit {
       this.updateErrorMessages();
     }
   }
-
-  // updateBlog(): void {
-  //   if (this.blogForm.valid) {
-  //     const updatedBlog: Blog = {
-  //       ...this.blogForm.value,
-  //       id: this.editingBlogId,
-  //       data_pubblic: this.blogForm.value.date ? new Date(this.blogForm.value.date).toISOString() : null, // Chuyển Date thành string
-  //     };
-  //     this.blogService.updateBlog(updatedBlog).subscribe(() => {
-  //       this.fetchBlogs(); // Lấy lại danh sách blog sau khi cập nhật
-  //       this.blogForm.reset(); // Reset form
-  //       this.resetErrorMessages(); // Reset thông báo lỗi
-  //       this.editMode = false; // Đặt lại chế độ
-  //     });
-  //   } else {
-  //     this.updateErrorMessages();
-  //   }
-  // }
-
   updateBlog(): void {
-    if (this.blogForm.valid && this.editingBlogId !== null) {
-      // Lấy thông tin hiện tại của blog
-      const currentBlog = this.blogList.find(blog => blog.id === this.editingBlogId);
-      const file: File = this.blogForm.get('thumbs')?.value;
-      if (currentBlog) {
-        // Tạo đối tượng blog cập nhật bằng cách kết hợp thông tin hiện tại và thông tin mới từ form
-        const updatedBlog: Blog = {
-          ...currentBlog,  // Giữ nguyên thông tin cũ
-          ...this.blogForm.value,  // Cập nhật thông tin mới từ form
-          id: this.editingBlogId,
-          category: +this.blogForm.value.category, // Chuyển ID thành số
-          data_pubblic: this.blogForm.value.data_pubblic ? new Date(this.blogForm.value.data_pubblic).toISOString() : currentBlog.data_pubblic, // Nếu không có ngày mới, giữ nguyên
-        };
-
-        // Nếu có file, thêm vào đối tượng blog
-        if (file) {
-          updatedBlog.thumbs = file.name; // Hoặc xử lý để lưu trữ tên file
+    if(!this.blogForm.valid) {
+      Object.values(this.blogForm.controls).forEach(control => {
+        if (control.invalid) {
+          control.markAsDirty();
+          control.updateValueAndValidity({ onlySelf: true });
         }
-
-        this.blogService.updateBlog(updatedBlog).subscribe(() => {
-          this.fetchBlogs(); // Lấy lại danh sách blog sau khi cập nhật
-          this.blogForm.reset(); // Reset form
-          this.resetErrorMessages(); // Reset thông báo lỗi
-          this.editMode = false; // Đặt lại chế độ
-          // Đóng modal
-          this.handleCancel();
-        });
-      }
+      });
+    }
+    if (this.blogForm.valid && this.editingBlogId !== null) {
+      const data = this.blogForm.value;
+      this.sendUpdateRequest(data);
     } else {
-      this.updateErrorMessages();
+      // this.updateErrorMessages();
     }
   }
+
+  sendUpdateRequest(updatedBlog: Blog): void {
+    this.blogService.updateBlog(updatedBlog).subscribe(() => {
+      this.fetchBlogs(); // Lấy lại danh sách blog sau khi cập nhật
+      this.blogForm.reset(); // Reset form
+      this.resetErrorMessages(); // Reset thông báo lỗi
+      this.editMode = false; // Đặt lại chế độ
+      this.handleCancel(); // Đóng modal
+    }, error => {
+      console.error('Error updating blog', error);
+    });
+  }
+
+
 
 
   deleteBlog(blogId: number): void {
@@ -196,10 +195,9 @@ export class BlogsComponent implements OnInit {
   }
 
   updateErrorMessages(): void {
-    this.titleError = this.blogForm.get('title')?.hasError('required') ? 'Tiêu đề là bắt buộc.' : null;
-    this.desError = this.blogForm.get('des')?.hasError('required') ? 'Mô tả là bắt buộc.' : null;
-    this.detailError = this.blogForm.get('detail')?.hasError('required') ? 'Chi tiết là bắt buộc.' : null;
-    this.categoryError = this.blogForm.get('category')?.hasError('required') ? 'Danh mục là bắt buộc.' : null;
+    this.titleError = this.blogForm.get('title')?.hasError('required') ? 'Tiêu đề là bắt buộc.' : '';
+    this.desError = this.blogForm.get('des')?.hasError('required') ? 'Mô tả là bắt buộc.' : "";
+    this.detailError = this.blogForm.get('detail')?.hasError('required') ? 'Chi tiết là bắt buộc.' : "";
+    this.categoryError = this.blogForm.get('category')?.hasError('required') ? 'Danh mục là bắt buộc.' : "";
   }
-  
 }
