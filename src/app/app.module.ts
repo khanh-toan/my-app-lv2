@@ -22,6 +22,8 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,9 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
     NzGridModule,
     NzIconModule ,
     NzTableModule,
-    NzToolTipModule
+    NzToolTipModule,
+    NzSelectModule,
+    DragDropModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],

@@ -26,4 +26,10 @@
   .blogs-container nz-table {
     margin-top: 16px;
   }
-  
+  .green {
+    color: green;
+}
+
+.red {
+    color: red;
+}

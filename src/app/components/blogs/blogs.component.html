@@ -17,12 +17,16 @@
             <tr *ngFor="let blog of blogList">
                 <td>{{ blog.id }}</td>
                 <td>{{ blog.title }}</td>
-                <td>{{ blog.public ? 'Công Khai' : 'Riêng Tư' }}</td>
-                <td>{{ blog.category }}</td>
+                <td [ngClass]="blog.public ? 'green' : 'red'">{{ blog.public ? 'true' : 'false' }}</td>
+                <!-- Kiểm tra xem categories đã có dữ liệu chưa -->
+                <td *ngIf="categories.length > 0">{{ getCategoryName(blog.category) }}</td>
+                <td *ngIf="categories.length === 0">Loading...</td>
                 <td>{{ blog.data_pubblic }}</td>
                 <td style="text-align: center;">
-                    <span nz-icon nzType="edit" (click)="openEditModal(blog)" nzTheme="outline" style="cursor:pointer; margin-right: 10px; color: #1714db;"></span>
-                    <span nz-icon nzType="delete" (click)="deleteBlog(blog.id)" nzTheme="outline" style="cursor:pointer; color: #d41212;" ></span>
+                    <span nz-icon nzType="edit" (click)="openEditModal(blog)" nzTheme="outline"
+                        style="cursor:pointer; margin-right: 10px; color: #1714db;"></span>
+                    <span nz-icon nzType="delete" (click)="deleteBlog(blog.id)" nzTheme="outline"
+                        style="cursor:pointer; color: #d41212;"></span>
                 </td>
             </tr>
         </tbody>
@@ -55,19 +59,41 @@
                         </nz-form-control>
                     </nz-form-item>
 
+                    <!-- Thay thế phần input thành nz-select -->
                     <nz-form-item nz-col [nzSpan]="24">
                         <nz-form-label [nzSpan]="6" nzRequired>Danh Mục</nz-form-label>
                         <nz-form-control [nzSpan]="24" [nzErrorTip]="categoryError">
-                            <input type="number" formControlName="category" nz-input style="width: 100%;" />
+                          <nz-select formControlName="category" nzShowSearch nzPlaceHolder="Chọn danh mục" style="width: 100%;">
+                            <nz-option *ngFor="let category of categories" [nzLabel]="category.name" [nzValue]="category.id"></nz-option>
+                          </nz-select>
                         </nz-form-control>
-                    </nz-form-item>
+                      </nz-form-item>                      
 
                     <nz-form-item nz-col [nzSpan]="24">
                         <nz-form-label [nzSpan]="6" nzRequired>Ngày</nz-form-label>
                         <nz-form-control [nzSpan]="24" [nzErrorTip]="dateError">
-                            <input type="date" formControlName="date" nz-input style="width: 100%;" />
+                            <input type="date" formControlName="data_pubblic" nz-input style="width: 100%;" />
                         </nz-form-control>
                     </nz-form-item>
+
+                    <nz-form-item nz-col [nzSpan]="24">
+                        <nz-form-label [nzSpan]="6">Trạng Thái</nz-form-label>
+                        <nz-form-control [nzSpan]="24">
+                          <label>
+                            <input type="radio" formControlName="public" [value]="true"/>True
+                          </label>
+                          <label>
+                            <input type="radio" formControlName="public" [value]="false"/> False
+                          </label>
+                        </nz-form-control>
+                      </nz-form-item>
+                      
+                      <nz-form-item nz-col [nzSpan]="24">
+                        <nz-form-label [nzSpan]="6">Ảnh</nz-form-label>
+                        <nz-form-control [nzSpan]="24">
+                          <input type="file" (change)="onFileChange($event)" />
+                        </nz-form-control>
+                      </nz-form-item>
                 </div>
             </form>
         </ng-container>
