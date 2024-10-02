@@ -158,7 +158,7 @@ export class BlogsComponent implements OnInit {
       // Lấy giá trị từ form và chuyển đổi mảng position từ string[] sang number[]
       const newBlog: Blog = {
         ...this.blogForm.value,
-        id: maxId + 1, // Tăng id lên 1
+        id: (maxId + 1).toString(), // Tăng id lên 1
         category: Number(this.blogForm.value.category), // Convert từ string sang number
         position: this.blogForm.value.position.map((posId: string) => Number(posId)) // Convert từ string sang number
       };

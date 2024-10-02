@@ -5,12 +5,14 @@
       "title": "Hai dự án cao tốc Bắc Nam sẽ khởi công vào tháng 8",
       "des": "Bộ Giao thông Vận tải sẽ mời thanh tra, kiểm toán tham gia vào các dự án từ đầu nhằm tăng cường công tác giám sát. ",
       "detail": "Tại cuộc họp về tiến độ cao tốc Bắc Nam chiều 26/6, ông Nguyễn Văn Thể, Bộ trưởng Giao thông Vận tải cho biết, các dự án cao tốc sử dụng vốn đầu tư công là Cam Lộ - La Sơn (đi qua 2 tỉnh Quảng Trị và Thừa Thiên Huế) và Cao Bồ - Mai Sơn (nằm trên tỉnh Nam Định và Ninh Bình) sẽ khởi công trong tháng 8. Dự án đường dẫn hai đầu cầu Mỹ Thuận 2 khởi công cuối năm 2019.\"Từ nay đến tháng 12, toàn bộ gói thầu của ba dự án đầu tư công sẽ được khởi công, riêng phần cầu chính Mỹ Thuận 2 sẽ bắt đầu vào quý I năm sau\", Bộ trưởng Thể nói.Với 8 dự án cao tốc Bắc Nam khác được đầu tư theo hình thức PPP, Bộ Giao thông Vận tải sẽ báo cáo Chính phủ để xin ý kiến chỉ đạo thực hiện các bước tiếp theo. Hiện nay Bộ bán hồ sơ thầu các dự án, đã có 120 nhà đầu tư mua hồ sơ. Với công tác đấu thầu dự án cao tốc Bắc Nam theo hình thức đầu tư công, Bộ trưởng Nguyễn Văn Thể chỉ đạo các chủ đầu tư, ban quản lý dự án lựa chọn những gói thầu phù hợp, kể cả gói thầu xây lắp để tổ chức đầu thầu qua mạng, đảm bảo tỷ lệ gói thầu qua mạng trên 50%. ",
-      "category": "3",
+      "category": 3,
       "data_pubblic": "2019-06-28",
       "public": true,
       "thumbs": "https://i-vnexpress.vnecdn.net/2019/06/26/anh-1-1533376007-680x0-8743-15-6639-9178-1561555738.jpg",
       "position": [
-        1
+        3,
+        4,
+        2
       ]
     },
     {
@@ -23,31 +25,28 @@
       "public": true,
       "thumbs": "https://i-vnexpress.vnecdn.net/2019/06/25/president-trump-02-gty-jef-190-3586-8058-1561478000.jpg",
       "position": [
-        1,
-        2,
-        3,
-        4,
-        1
+        2
       ]
     },
     {
+      "id": "5",
       "title": "Giá Bitcoin mất hơn 3.000 USD một ngày",
       "des": "Vừa chạm đỉnh 17 tháng sáng hôm qua (27/6), giá tiền kỹ thuật số phổ biến nhất thế giới  đã lao dốc.",
       "detail": "Cách đây vài giờ, giá Bitcoin chỉ còn 10.314 USD một đồng, giảm tới 3.600 USD so với đỉnh 17 tháng hôm qua. Hiện tại, mỗi đồng giao dịch quanh 11.460 USD. Hôm qua, Bitcoin có lúc mất hơn 1.700 USD chỉ trong 15 phút. Việc mất giá diễn ra khi sàn giao dịch tiền ảo hàng đầu thế giới Coinbase gặp sự cố. Trên CNBC, người phát ngôn Coinbase cho biết website của họ không thể truy cập \"trong thời gian ngắn vì khối lượng giao dịch lớn\".Dù vậy, giới chuyên gia cũng nhận định đà tăng của Bitcoin gần đây không bền vững. \"Kể cả những người lạc quan nhất vào tiền số cũng sẽ nói rằng mức tăng hơn 50% một tuần là quá nhanh, quá nhiều\", CEO Michael Moro của Genesis Global Trading cho biết. Ông khẳng định \"lực đẩy chính\" đằng sau diễn biến này là việc nhà đầu tư dùng đòn bẩy (vay nợ) để giao dịch. ",
       "category": 2,
-      "public": true,
       "data_pubblic": "2019-06-04",
-      "position": [
-        1
-      ],
+      "public": true,
       "thumbs": "https://i-kinhdoanh.vnecdn.net/2019/06/28/bit-4750-1561686878.jpg",
-      "id": "5"
+      "position": [
+        1,
+        2
+      ]
     }
   ],
   "categories": [
     {
       "id": "1",
-      "name": "Địa điểm"
+      "name": "Địa điểm123"
     },
     {
       "id": "2",
